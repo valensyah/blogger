@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->references('categories')->constrained();
+            $table->index('category_id');
+            $table->index('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->string('title');
             $table->string('paragraph');
             $table->timestamps();
