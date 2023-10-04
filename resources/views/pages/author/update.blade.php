@@ -14,10 +14,13 @@
             for (let i = 0; i < modifiedTags.length; i++) {
                 console.log(modifiedTags[i])
                 elmTag.innerHTML += `
-                    <button class="btn btn-outline-primary me-2" disabled="true">${modifiedTags[i]}</button>
+                <button class="btn btn-outline-primary me-2" disabled="true">${modifiedTags[i]}</button>
                 `
             }
         }
+        // $(document).ready(function () {
+        //     previewTags()
+        // })
     </script>
 @endsection
 @section('style')
@@ -47,35 +50,37 @@
                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
     </div>
 
-    <form method="POST" action="{{ url('/author/create-content') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url('/author/update-content').'/'.$data->id }}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input class="form-control" name="title" type="text" id="title" required>
+            <input class="form-control" name="title" type="text" id="title" value="{{ $data->title }}" required>
         </div> 
         <div class="mb-3">
             <label for="formFile" class="form-label">Add Thumbnail Image</label>
             <input class="form-control" name="img_thumb" type="file" id="formFile" onchange="fileRead(event)">
         </div> 
-        <div id="img-preview" class="mb-3 d-none">
+        <div id="img-preview" class="mb-3 {{ $data->img_thumb ? '' : 'd-none' }}">
             <div class="w-100 d-flex justify-content-center">
-                <img width="400px" id="preview" height="300px" src="" alt="">
+                <img width="400px" id="preview" height="300px" src="{{ $data->img_thumb ? asset('/storage/images/thumbnail').'/'.$data->img_thumb : '' }}" alt="">
             </div>
         </div>
         <div class="mb-3">
             <label class="form-label">Select category</label>
             <select class="form-select" name="category_id">
-                <option selected>Open this select menu</option>
+                <option selected aria-selected="true" value="{{ $data->category->id }}">{{ $data->category->title }}</option>
                 @foreach ($category as $item)
-                    <option value="{{ $item->id }}">{{ $item->title }}</option>
+                    @if ($item->id !== $data->category->id)
+                        <option value="{{ $item->id }}">{{ $item->title }}</option>
+                    @endif
                 @endforeach
             </select>
         </div>
         <div class="mb-3">
             <label for="title" class="form-label">Tags</label>
-            <input class="form-control" name="tags" type="text" id="tags" placeholder="example: tags1,tags2,tags3,....." onchange="previewTags(event)">
+            <input class="form-control" name="tags" type="text" id="tags" placeholder="example: tags1,tags2,tags3,....." value="{{ $data->tags }}" onchange="previewTags(event)">
         </div> 
-        <div id="tags-preview" class="mb-3 d-none">
+        <div id="tags-preview" class="mb-3 {{ $data->tags ? '' : 'd-none' }}">
             <div id="item-tags" class="w-100 d-flex justify-content-start"></div>
         </div>
         <div class="mb-3">
@@ -98,6 +103,9 @@
                     },
                 }
             })
+            .then( editor => {
+                editor.setData('{!! $data->paragraph !!}')
+            } )
             .catch( error => {
                 console.error( error );
             } );

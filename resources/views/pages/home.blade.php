@@ -27,10 +27,9 @@
           <h5 class="card-title lh-sm fs-6 fw-semibold text-truncate">{{ $item->title }}</h5>
           <p class="card-text"><small class="text-body-secondary">{{ $item->created_at->format('F j, Y') }}</small></p>
           <p class="card-text text-body-secondary fw-semibold">By {{ $item->user->name }}</p>
-          <div class="d-flex justify-content-start">
-            <p class="me-2 text-info-emphasis">#news</p>
-            <p class="me-2 text-info-emphasis">#viral</p>
-            <p class="me-2 text-info-emphasis">#indonesia</p>
+          <div class="d-flex">
+            <span class="fw-semibold me-2" style="width: 50px !important">Tags :</span>
+            <p class="text-info-emphasis text-truncate">{{ $item->tags ? $item->tags : '-' }}</p>
           </div>
         </div>
       </div>

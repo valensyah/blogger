@@ -15,6 +15,16 @@ class BlogController extends Controller
 {
     public function index($id) {
         $news = News::find($id);
+        $temp = [];
+        if ($news->tags) {
+            $tag = explode(",", $news->tags);
+            foreach ($tag as $t) {
+                $newTag = '#'.$t;
+                array_push($temp, $newTag);
+            }
+            $news->tags = implode(', ', $temp);
+            // dd($item->tags);
+        }
         $comment = Comment::where('new_id', $id)->orderBy('created_at', 'desc')->get();
         foreach($comment as $item) {
             $msgSent = Carbon::parse($item->created_at);

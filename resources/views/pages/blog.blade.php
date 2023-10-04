@@ -79,6 +79,8 @@
 <div>
     <h1 class="mb-3">{{ $news->title }}</h1>
     <p>{!! $news->paragraph !!}</p>
+    <p class="fw-semibold">Tags :</p>
+    <p class="text-info-emphasis">{{ $news->tags }}</p>
 </div>
 
 <hr class="my-5 w-50 mx-auto">

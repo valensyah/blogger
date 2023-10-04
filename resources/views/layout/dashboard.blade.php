@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Postify</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('assets/vendor/sbadmin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -20,6 +20,7 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('assets/vendor/sbadmin/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @yield('script')
     @yield('style')
 </head>

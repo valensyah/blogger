@@ -32,11 +32,14 @@ Route::post('/send-notif', [BlogController::class, 'sendComment']);
 Route::prefix('author')->middleware(['auth'])->group(function () {
     Route::get('/', [AuthorController::class, 'index']);
     Route::get('/create', [AuthorController::class, 'createContent']);
+    Route::get('/edit/{id}', [AuthorController::class, 'updateContent']);
+    Route::post('/create-content', [AuthorController::class, 'postContent']);
+    Route::post('/update-content/{id}', [AuthorController::class, 'editContent']);
+    Route::post('/delete-content/{id}', [AuthorController::class, 'deleteContent']);
     // Route::group(function () {
     // });
 });
 Route::post('/upload-image', [ImageUploadController::class, 'uploadImage'])->name('upload.image');
-Route::post('/create-content', [AuthorController::class, 'postContent']);
 
 // Auth routes
 Route::get('/login', [AuthController::class, 'login'])->name('login');
