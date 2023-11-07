@@ -6,6 +6,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ImageUploadController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,7 @@ Route::prefix('author')->middleware(['auth'])->group(function () {
     Route::get('/', [AuthorController::class, 'index']);
     Route::get('/create', [AuthorController::class, 'createContent']);
     Route::get('/edit/{id}', [AuthorController::class, 'updateContent']);
+    Route::get('/profile', [UserController::class, 'index']);
     Route::post('/create-content', [AuthorController::class, 'postContent']);
     Route::post('/update-content/{id}', [AuthorController::class, 'editContent']);
     Route::post('/delete-content/{id}', [AuthorController::class, 'deleteContent']);

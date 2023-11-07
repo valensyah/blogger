@@ -26,6 +26,9 @@
         .ck-content {
             min-height: 300px !important;
         }
+        .ck-body-wrapper {
+            display: none !important;
+        }
     </style>
 @endsection
 @section('content')

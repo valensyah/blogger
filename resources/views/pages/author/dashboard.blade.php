@@ -144,8 +144,8 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Pending Requests</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                    Comments</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $comments }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -168,58 +168,67 @@
                         <h6 class="m-0 font-weight-bold text-primary">List of content</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Title</th>
-                                        <th>Thumbnail</th>
-                                        <th>Category</th>
-                                        <th>Tags</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Title</th>
-                                        <th>Thumbnail</th>
-                                        <th>Category</th>
-                                        <th>Tags</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
-                                    @php
-                                        $no = 1;
-                                    @endphp
-                                    @foreach ($data as $item)
+                        @if (count($data) > 0)
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $no++ }}</td>
-                                            <td width="30%">{{ $item->title }}</td>
-                                            <td class="text-center"><img src="{{ $item->img_thumb ? asset('storage/images/thumbnail').'/'.$item->img_thumb : 'https://play-lh.googleusercontent.com/8LYEbSl48gJoUVGDUyqO5A0xKlcbm2b39S32xvm_h-8BueclJnZlspfkZmrXNFX2XQ' }}" width="150px" height="100px" alt=""></td>
-                                            <td>{{ $item->category->title }}</td>
-                                            <td class="text-center">{{ $item->tags ? $item->tags : '-' }}</td>
-                                            <td class="">
-                                                <div class="dropdown">
-                                                    <a class="btn btn-success dropdown-toggle" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                      Actions
-                                                    </a>
-                                                  
-                                                    <ul class="dropdown-menu">
-                                                      <li><a href="{{ url('/author/edit').'/'.$item->id }}" class="btn btn-outline-info dropdown-item">Edit</a></li>
-                                                      <li><a href="javascript:void(0)" class="btn btn-outline-danger dropdown-item" onclick="deleteData({{$item->id}})">Delete</a></li>
-                                                      {{-- <li><a class="dropdown-item" href="#">Something else here</a></li> --}}
-                                                    </ul>
-                                                  </div>
-                                            </td>
-                                            {{-- <td><a href="{{ url('/author/edit').'/'.$item->id }}" class="btn btn-outline-info">Edit</a> | <a href="{{ url('/author/delete-content').'/'.$item->id }}" class="btn btn-outline-danger">Delete</a></td> --}}
+                                            <th>No.</th>
+                                            <th>Title</th>
+                                            <th>Thumbnail</th>
+                                            <th>Category</th>
+                                            <th>Tags</th>
+                                            <th>Action</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Title</th>
+                                            <th>Thumbnail</th>
+                                            <th>Category</th>
+                                            <th>Tags</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @php
+                                            $no = 1;
+                                        @endphp
+                                        @foreach ($data as $item)
+                                            <tr>
+                                                <td>{{ $no++ }}</td>
+                                                <td width="30%">{{ $item->title }}</td>
+                                                <td class="text-center"><img src="{{ $item->img_thumb ? asset('storage/images/thumbnail').'/'.$item->img_thumb : 'https://play-lh.googleusercontent.com/8LYEbSl48gJoUVGDUyqO5A0xKlcbm2b39S32xvm_h-8BueclJnZlspfkZmrXNFX2XQ' }}" width="150px" height="100px" alt=""></td>
+                                                <td>{{ $item->category->title }}</td>
+                                                <td class="text-center">{{ $item->tags ? $item->tags : '-' }}</td>
+                                                <td class="">
+                                                    <div class="dropdown">
+                                                        <a class="btn btn-success dropdown-toggle" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Actions
+                                                        </a>
+                                                    
+                                                        <ul class="dropdown-menu">
+                                                        <li><a href="{{ url('/author/edit').'/'.$item->id }}" class="btn btn-outline-info dropdown-item">Edit</a></li>
+                                                        <li><a href="javascript:void(0)" class="btn btn-outline-danger dropdown-item" onclick="deleteData({{$item->id}})">Delete</a></li>
+                                                        {{-- <li><a class="dropdown-item" href="#">Something else here</a></li> --}}
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                {{-- <td><a href="{{ url('/author/edit').'/'.$item->id }}" class="btn btn-outline-info">Edit</a> | <a href="{{ url('/author/delete-content').'/'.$item->id }}" class="btn btn-outline-danger">Delete</a></td> --}}
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="w-100 d-flex justify-content-center">
+                                <p class="text-secondary">Anda belum mempunyai content. mulai <a href="{{ url('/author/create') }}">membuat content</a></p>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="d-flex">
+                        {{ $data->links() }}
                     </div>
                 </div>
             </div>

@@ -28,7 +28,6 @@
           <p class="card-text"><small class="text-body-secondary">{{ $item->created_at->format('F j, Y') }}</small></p>
           <p class="card-text text-body-secondary fw-semibold">By {{ $item->user->name }}</p>
           <div class="d-flex">
-            <span class="fw-semibold me-2" style="width: 50px !important">Tags :</span>
             <p class="text-info-emphasis text-truncate">{{ $item->tags ? $item->tags : '-' }}</p>
           </div>
         </div>
@@ -36,4 +35,5 @@
     </a>
     @endforeach
   </div>
+  {{ $news->links() }}
 @endsection

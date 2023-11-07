@@ -5,14 +5,27 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\News;
 use App\Models\Category;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 
 class AuthorController extends Controller
 {
     public function index() {
         $title = 'Dashboard';
-        $data = News::where('user_id', Auth::user()->id)->with('category')->get();
-        return view('pages.author.dashboard', compact('title', 'data'));
+        $data = News::where('user_id', Auth::user()->id)->with('category')->paginate(5);
+        $comments = Comment::where(function ($query) use ($data) {
+            $query->whereIn('new_id', $data->pluck('id'));
+        })->count();
+        foreach ($data as $item) {
+            $tags = explode(",", $item->tags);
+            $newTag = [];
+            foreach ($tags as $tag) {
+                $tag = '#'.$tag;
+                array_push($newTag, $tag);
+            }
+            $item->tags = implode(", ", $newTag);
+        }
+        return view('pages.author.dashboard', compact('title', 'data', 'comments'));
     }
 
     public function createContent() {

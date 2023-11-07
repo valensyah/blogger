@@ -37,6 +37,36 @@ class BlogController extends Controller
         return view('pages.blog', compact('news', 'comment'));
     }
 
+    public function getContentById($id) {
+        $news = News::find($id);
+        $temp = [];
+        if ($news->tags) {
+            $tag = explode(",", $news->tags);
+            foreach ($tag as $t) {
+                $newTag = '#'.$t;
+                array_push($temp, $newTag);
+            }
+            $news->tags = implode(', ', $temp);
+        }
+        $comment = Comment::where('new_id', $id)->orderBy('created_at', 'desc')->get();
+        foreach($comment as $item) {
+            $msgSent = Carbon::parse($item->created_at);
+            $now = Carbon::now();
+            $timeDiffInSec = $now->diffInSeconds($msgSent);
+            $timeDiff = $now->diffForHumans($msgSent);
+            $item->time = $timeDiff;
+        }
+        
+        return response()->json([
+            'status' => 200,
+            'message' => 'Data berhasil didapatkan',
+            'data' => [
+                'content' => $news,
+                'comment' => $comment
+            ]
+            ]);
+    }
+
     public function sendComment(Request $req) {
         // $rules = [
         //     'email' => 'required|unique:comments',
@@ -56,7 +86,7 @@ class BlogController extends Controller
         // if ($validator->fails()) {
         //     return redirect()->back()->withErrors($validator)->withInput();
         // }
-
+        // dd($req->all());
         $input = Comment::create([
             'email' => Auth::check() ? Auth::user()->name : $req->email,
             'message' => $req->message,
