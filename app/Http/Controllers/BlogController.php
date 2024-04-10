@@ -10,11 +10,12 @@ use App\Models\user;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Pusher\Pusher;
 
 class BlogController extends Controller
 {
     public function index($id) {
-        $news = News::find($id);
+        $news = News::with('user')->find($id);
         $temp = [];
         if ($news->tags) {
             $tag = explode(",", $news->tags);
@@ -25,6 +26,8 @@ class BlogController extends Controller
             $news->tags = implode(', ', $temp);
             // dd($item->tags);
         }
+        $news->formated_date = Carbon::parse($news->created_at)->format('d F Y');
+        // dd($news->created_at);
         $comment = Comment::where('new_id', $id)->orderBy('created_at', 'desc')->get();
         foreach($comment as $item) {
             $msgSent = Carbon::parse($item->created_at);
@@ -33,12 +36,12 @@ class BlogController extends Controller
             $timeDiff = $now->diffForHumans($msgSent);
             $item->time = $timeDiff;
         }
-        
+        // return response()->json($news);
         return view('pages.blog', compact('news', 'comment'));
     }
 
     public function getContentById($id) {
-        $news = News::find($id);
+        $news = News::with('user')->find($id);
         $temp = [];
         if ($news->tags) {
             $tag = explode(",", $news->tags);
@@ -68,25 +71,11 @@ class BlogController extends Controller
     }
 
     public function sendComment(Request $req) {
-        // $rules = [
-        //     'email' => 'required|unique:comments',
-        //     'message' => 'required'
-        // ];
+        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true
+        ]);
 
-        // $errMsg = [
-        //     'email.required' => 'email field is required.',
-        //     'email.unique' => 'email already in use.',
-        //     'message.required' => 'message field is required.'
-        // ];
-
-        // // Perform validation
-        // $validator = Validator::make($req->all(), $rules, $errMsg);
-
-        // Check if validation fails
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator)->withInput();
-        // }
-        // dd($req->all());
         $input = Comment::create([
             'email' => Auth::check() ? Auth::user()->name : $req->email,
             'message' => $req->message,
@@ -98,6 +87,8 @@ class BlogController extends Controller
             'time' =>  'now'
         ];
         
-        event(new BlogComment($data));
+        //event(new BlogComment($data));
+        $pusher->trigger('comment', 'sendComment', $data);
+        return response()->json($data);
     }
 }

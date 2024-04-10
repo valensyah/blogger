@@ -30,6 +30,7 @@ Route::get('/news/{id}', [BlogController::class, 'index']);
 Route::post('/send-notif', [BlogController::class, 'sendComment']);
 
 // Dashboard author
+Route::get('/notification/{email}', [AuthorController::class, 'notification']);
 Route::prefix('author')->middleware(['auth'])->group(function () {
     Route::get('/', [AuthorController::class, 'index']);
     Route::get('/create', [AuthorController::class, 'createContent']);

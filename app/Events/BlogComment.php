@@ -14,10 +14,6 @@ class BlogComment implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-
      public $message;
 
     public function __construct($message)
@@ -25,16 +21,8 @@ class BlogComment implements ShouldBroadcastNow
         $this->message = $message;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
     public function broadcastOn()
     {
-        // return [
-        //     new PrivateChannel('channel-name'),
-        // ];
         return ['comment'];
     }
 

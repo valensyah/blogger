@@ -14,6 +14,9 @@
             margin-top: 5%;
             margin-bottom: 3%;
         }
+        .news-thumb {
+            width: 100% !important
+        }
     </style>
 @endsection
 @section('script')
@@ -21,40 +24,41 @@
     Pusher.logToConsole = true;
 
     var pusher = new Pusher('877a1bdc219d2aab6bf3', {
-    cluster: 'ap1',
-    encrypted: true
+        cluster: 'ap1',
+        encrypted: true
     });
 
     var channel = pusher.subscribe('comment');
     channel.bind('sendComment', function(data) {
-        console.log(data.message.time)
-      $("#card-for-message").prepend(`
+        console.log(data)
+      $("#card-for-message").append(`
       <div class="card mb-3 p-4" style="max-width: 540px; max-height: 500px;">
           <div class="my-2">
               <div class="d-flex justify-start align-center">
                   <img class="me-2" src="{{asset('icons/profile.png')}}" width="24" height="24" />
-                  <p>${data.message.email}</p>
+                  <p>${data.email}</p>
               </div>
               <div class="d-flex justify-content-between align-center">
-                  <p>${data.message.msg}</p>  
-                  <p>${data.message.time}</p>
+                  <p>${data.msg}</p>  
+                  <p>${data.time}</p>
               </div>
           </div>
       </div>
       `)
     });
-  </script>
-<script>
-    $(document).ready(function() {
-        let figure = document.getElementsByTagName("figure");
-        // let thumb = figure[0].getElementsByTagName("img");
-        figure[0].innerHTML += `<p>{{$news->created_at->format('F j, Y')}}</p>`
-    })
+    // $(document).ready(function() {
+    //     let figure = document.getElementsByTagName("figure");
+    //     // let thumb = figure[0].getElementsByTagName("img");
+    //     figure[0].innerHTML += `<p>{{$news->created_at->format('F j, Y')}}</p>`
+    // })
 
 
-    const sendMsg = () => {
+    function sendMsg () {
       $.ajax({
           url: "http://localhost:8000/send-notif", // Replace with your API endpoint
+          headers: {
+            'Access-Controll-Allow-Origin': ['http://127.0.0.1:8000', 'http://localhost:8000']
+          },
           type: "POST",
           dataType: "json",
           data: JSON.stringify({
@@ -65,7 +69,7 @@
           }),
           contentType: "application/json",
           success: function(data) {
-            console.log(data)
+            // console.log(data)
               // $("#result").html(JSON.stringify(data));
           },
           error: function(xhr, status, error) {
@@ -77,6 +81,14 @@
 @endsection
 @section('content')
 <div>
+    <div class="d-flex align-items-center mb-3">
+        <img src="{{ $news->user->avatar }}" class="rounded-circle" alt="" width="36" height="36">
+        <div class="ms-3">
+            <p class="fw-bold m-0">{{ $news->user->name }}</p>
+            <p class="m-0">{{ $news->formated_date }}</p>
+        </div>
+    </div>
+    <img class="news-thumb" src="{{asset('storage/images/thumbnail').'/'.$news->img_thumb}}" alt="">
     <h1 class="mb-3">{{ $news->title }}</h1>
     <p>{!! $news->paragraph !!}</p>
     <p class="fw-semibold">Tags :</p>

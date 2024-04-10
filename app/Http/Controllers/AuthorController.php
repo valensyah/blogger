@@ -7,6 +7,8 @@ use App\Models\News;
 use App\Models\Category;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
+use Pusher\Pusher;
+use DB;
 
 class AuthorController extends Controller
 {
@@ -111,5 +113,15 @@ class AuthorController extends Controller
                 'message' => 'Terjadi kesalahan saat menghapus data.'
             ]);
         }
+    }
+
+    public function notification($email) {
+        $message = DB::table('comments')
+                    ->select('comments.*')
+                    ->join('news', 'news.id', '=', 'comments.new_id')
+                    ->join('users', 'users.id', '=', 'news.user_id')
+                    ->where('users.email', $email)
+                    ->get();
+        return response()->json($message);
     }
 }
